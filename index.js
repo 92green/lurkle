@@ -64,8 +64,8 @@ lurkles.map(function(lurklePath, key) {
     });
 });
 
-infoTable.push(['Tasks', chalk.blue(tasks.join(', '))]);
-infoTable.push(['Lurkles found', chalk.blue(lurkles.length)]);
-infoTable.push(['Tasks to run', chalk.blue(tasksRun)]);
+infoTable.push(['tasks', chalk.blue(tasks.join(', '))]);
+infoTable.push(['lurkles found', chalk.blue(lurkles.length)]);
+infoTable.push(['tasks to run', chalk.blue(tasksRun)]);
 console.log(infoTable.toString());
 console.log(commandTable.toString());
