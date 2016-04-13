@@ -29,7 +29,7 @@ function loadYaml(path) {
 
 function fileExists(path) {
     try {
-        fs.accessSync(path, fs.F_OK);
+        fs.statSync(path, fs.F_OK);
         return path;
     } catch (e) {
         console.log(chalk.red(path, 'does not exist'));
@@ -45,7 +45,7 @@ program
 var config;
 
 try {
-    fs.accessSync(LURKLE_CONFIG_PATH, fs.F_OK);
+    fs.statSync(LURKLE_CONFIG_PATH, fs.F_OK);
     config = loadYaml(LURKLE_CONFIG_PATH);
 } catch (e) {
     console.error(e);
