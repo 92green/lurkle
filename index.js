@@ -47,9 +47,7 @@ var config;
 try {
     fs.statSync(LURKLE_CONFIG_PATH, fs.F_OK);
     config = loadYaml(LURKLE_CONFIG_PATH);
-} catch (e) {
-    console.error(e);
-}
+} catch (e) {}
 
 var lurkles = program.lurkles || config.lurkles;
 var tasks = (program.args.length) ? program.args : config.tasks;
