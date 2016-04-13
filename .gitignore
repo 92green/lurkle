@@ -1,0 +1,5 @@
+*.log
+*.orig
+*.map
+node_modules
+.DS_store
