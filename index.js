@@ -34,7 +34,7 @@ function tableLog(arr) {
 program
     .version(pkg.version)
     .usage('[options] <tasks ...>')
-    .option('-l, --lurkles <items>', 'A list of config files to merge', val.split(','))
+    .option('-l, --lurkles <items>', 'A list of config files to merge', function(val) {return val.split(',')})
     .parse(process.argv);
 
 // Parse cli arguments
