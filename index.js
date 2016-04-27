@@ -74,13 +74,16 @@ tasks.forEach(function(task) {
         if(cc[task]) {
             tableLog([chalk.blue(task), chalk.green(cc.lurklePath), cc[task]]);
 
-            shellCommand(cc[task], {
+            var childProcess = shellCommand(cc[task], {
                 cwd: path.resolve(cc.lurklePath),
                 stdio: 'inherit'
             });          
+
+            if(childProcess.status > 0) {
+                process.exit(childProcess.status);
+            }
         }
     });
 })
 
-
-
+process.exit();
