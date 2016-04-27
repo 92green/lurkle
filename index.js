@@ -8,21 +8,8 @@ var util = require('util');
 var chalk = require('chalk');
 var Table = require('cli-table');
 var shellCommand = require('./src/shellCommand');
-
 var commandTable = new Table();
-var infoTable = new Table();
 var LURKLE_CONFIG_PATH = path.resolve('lurkle-config.yml');
-
-
-function list(val) {
-  return val.split(',');
-}
-
-function logExec(err, stdout, stderr) {
-    if (err) throw err;
-    if (stdout) console.log(stdout);
-    if (stderr) console.log(stderr);
-}
 
 function loadYaml(path) {
     return yaml.load(fs.readFileSync(path));
@@ -42,15 +29,16 @@ function tableLog(arr) {
     table.push(arr);
     console.log(table.toString());
 }
- 
+
+// Generate CLI 
 program
     .version(pkg.version)
     .usage('[options] <tasks ...>')
-    .option('-l, --lurkles <items>', 'A list of config files to merge', list)
+    .option('-l, --lurkles <items>', 'A list of config files to merge', val.split(','))
     .parse(process.argv);
 
+// Parse cli arguments
 var config;
-
 try {
     fs.statSync(LURKLE_CONFIG_PATH, fs.F_OK);
     config = loadYaml(LURKLE_CONFIG_PATH);
@@ -61,6 +49,7 @@ var tasks = (program.args.length) ? program.args : config.tasks;
 var tasksRun = 0;
 
 
+// Generate the order of commands
 var lurkleCommands = lurkles.map(function(lurklePath, key) {    
     var lurkle = loadYaml(fileExists(path.resolve(lurklePath,'lurkle.yml')));
     commandTable.push([lurklePath].concat(tasks.map(function(ll){ return lurkle[ll] ? chalk.green(ll) : chalk.gray(ll) })));
@@ -73,17 +62,13 @@ var lurkleCommands = lurkles.map(function(lurklePath, key) {
             
         }
         return reduction;
-    }, {
-        lurklePath: lurklePath
-    })
+    }, {lurklePath: lurklePath})
 });
 
-infoTable.push(['tasks', chalk.blue(tasks.join(', '))]);
-infoTable.push(['lurkles found', chalk.blue(lurkles.length)]);
-infoTable.push(['tasks to run', chalk.blue(tasksRun)]);
-console.log(infoTable.toString());
+// Pre info
 console.log(commandTable.toString());
 
+// Start spawning the tasks in order
 tasks.forEach(function(task) {
     lurkleCommands.forEach(function(cc){
         if(cc[task]) {
