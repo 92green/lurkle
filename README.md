@@ -41,3 +41,10 @@ test: npm run test
 build: npm run build
 ```
 
+## Run
+```sh
+lurkle [task] [-l location ]
+```
+
+
+
