@@ -11,7 +11,7 @@ npm install -g lurkle     # lurkle [command]
 
 ## Configuration
 
-Create a `lurkle-config.yml` in the root of your project. This contains a list of the locations of your lurkles and a list of possible task that each lurkle can run. This doubles as both configuration and documentation. 
+Create a `lurkle-config.yml` in the root of your project. This contains a list of the locations to where your lurkles reside. As well as a list of possible tasks that each can run. This doubles as both configuration and documentation. 
 
 ```yml
 lurkles:
