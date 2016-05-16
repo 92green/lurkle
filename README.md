@@ -5,8 +5,7 @@ Lurkle is a CLI that lets you run similar commands in multiple sub-folders. It's
 
 ## Install 
 ```bash
-npm install --save lurkle # ./node_modules/.bin/lurkle [command]
-npm install -g lurkle     # lurkle [command]
+npm install -g lurkle
 ```
 
 ## Configuration
