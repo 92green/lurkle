@@ -44,14 +44,14 @@ build: npm run build
 ## Run
 ```sh
 lurkle [tasks] [-l optional list of lurkle locations]
-
 ```
-|||
-|-|-|
-|`lurkle`                                     | Run all commands in all lurkles |
-|`lurkle build`                                | run the build command in all lurkles |
+
+| Command                                      | Result                                        |
+|----------------------------------------------|-----------------------------------------------|
+|`lurkle`                                      | Run all commands in all lurkles               |
+|`lurkle build`                                | run the build command in all lurkles          |
 |`lurkle build test`                           | run the build and test command in all lurkles |
-|`lurkle build -l src/services/microservice-b` | run the  command in microservice-b lurkle |
+|`lurkle build -l src/services/microservice-b` | run the  command in microservice-b lurkle     |
 
 
 
