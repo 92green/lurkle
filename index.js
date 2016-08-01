@@ -50,9 +50,22 @@ var tasksRun = 0;
 
 
 // Generate the order of commands
-var lurkleCommands = lurkles.map(function(lurklePath, key) {    
-    var lurkle = loadYaml(fileExists(path.resolve(lurklePath,'lurkle.yml')));
-    commandTable.push([lurklePath].concat(tasks.map(function(ll){ return lurkle[ll] ? chalk.green(ll) : chalk.gray(ll) })));
+var lurkleCommands = lurkles.map(function(lurklePath, key) {
+    var lurkle = lurklePath;
+    var lurkleName = 'inline-lurkle-' + key; 
+    var inline = true;
+
+    if(typeof lurklePath === 'string') {
+        lurkle = loadYaml(fileExists(path.resolve(lurklePath,'lurkle.yml')));
+        lurkleName = lurklePath;
+        inline = false;
+    }
+
+    // Add row to info table
+    var commandTableRow = [lurkleName].concat(tasks.map(function(ll){ 
+        return lurkle[ll] ? chalk.green(ll) : chalk.gray(ll) 
+    }))
+    commandTable.push(commandTableRow);
 
     return tasks.reduce(function(reduction, taskKey) {
         if (lurkle[taskKey]) {
@@ -62,26 +75,32 @@ var lurkleCommands = lurkles.map(function(lurklePath, key) {
             
         }
         return reduction;
-    }, {lurklePath: lurklePath})
+    }, {
+        lurkleName: lurkleName,
+        cwd: lurkle.cwd,
+        inline: inline
+    })
 });
 
 // Pre info
 console.log(commandTable.toString());
+console.log(lurkleCommands);
 
 // Start spawning the tasks in order
 tasks.forEach(function(task) {
+    tableLog(['lurkle ' + chalk.blue(task)]);
     lurkleCommands.forEach(function(cc){
         if(cc[task]) {
-            tableLog([chalk.blue(task), chalk.green(cc.lurklePath), cc[task]]);
-
+            tableLog([chalk.blue(task), chalk.green(cc.lurkleName), cc[task]]);
             var childProcess = shellCommand(cc[task], {
-                cwd: path.resolve(cc.lurklePath),
+                cwd: (cc.inline) ? cc.cwd || './' : path.resolve(cc.lurkleName),
                 stdio: 'inherit'
             });          
 
             if(childProcess.status > 0) {
                 process.exit(childProcess.status);
             }
+            console.log('\r');
         }
     });
 })

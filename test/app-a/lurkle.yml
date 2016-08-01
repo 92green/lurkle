@@ -1,0 +1,3 @@
+name: app-a
+# test: echo 'test from app-a'
+build: echo 'build from app-a'
