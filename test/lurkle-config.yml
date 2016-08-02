@@ -1,16 +1,16 @@
 lurkles:
-    # - 
-    #   name: embedded-lurkle
-    #   tasks:
-    #     test: 
-    #       - echo 'test 1 from embedded-lurkle'
-    #       - echo 'test 2 from embedded-lurkle'
-    - test: echo "embedded test from $(pwd)"
-      cwd: './app-a'
-    - test: echo "embedded test from $(pwd)"
-      cwd: './app-b'
-    - ./app-a
-    - ./app-b
+  - name: lurkle-1
+    cwd: './app-a'
+    tasks:
+      test: echo "embedded test from $(pwd)"
+
+  - name: lurkle-2
+    cwd: './app-b'
+    tasks:
+      test: echo "embedded test from $(pwd)"
+      
+  - ./app-a
+  - ./app-b
 tasks:
-    - test
-    - build
+  test: run the test suites
+  build: build the application

@@ -1,3 +1,5 @@
 name: app-b
-test: echo 'test from app-b'
-build: echo 'build from app-b'
+tasks:
+  test: echo 'test from app-b'
+  build: echo 'build from app-b'
+  other: echo 'build from app-b'
