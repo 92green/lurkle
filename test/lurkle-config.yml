@@ -8,9 +8,10 @@ lurkles:
     cwd: './app-b'
     tasks:
       test: echo "embedded test from $(pwd)"
-      
+
   - ./app-a
   - ./app-b
 tasks:
   test: run the test suites
   build: build the application
+  thing4: build the application thing4
