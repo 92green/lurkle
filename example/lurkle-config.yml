@@ -14,4 +14,3 @@ lurkles:
 tasks:
   test: run the test suites
   build: build the application
-  thing4: build the application thing4

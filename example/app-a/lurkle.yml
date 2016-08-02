@@ -5,7 +5,3 @@ tasks:
     - echo 'build from app-a'
     - echo 'build2 from app-a'
   thing: echo 'build from app-a'
-  thing4: echo 'build from app-a'
-  thing3: echo 'build from app-a'
-  thing2: echo 'build from app-a'
-  thing1: echo 'build from app-a'
