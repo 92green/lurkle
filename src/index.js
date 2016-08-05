@@ -16,12 +16,18 @@ function loadYaml(path) {
     return yaml.load(fs.readFileSync(path));
 }
 
-function fileExists(path) {
+function addWarning(message) {
+    warnings.push(chalk.yellow(' * ', message))
+}
+
+function lurkleExists(lurkle) {
+    var pathLocation = path.resolve(lurkle, 'lurkle.yml')
     try {
-        fs.statSync(path, fs.F_OK);
-        return path;
+        fs.statSync(pathLocation, fs.F_OK);
+        return pathLocation;
     } catch (e) {
-        console.log(chalk.red(path, 'does not exist'));
+        addWarning(lurkle + '/lurkle.yml' + ' does not exist');
+        return false;
     }
 }
 
@@ -38,7 +44,8 @@ try {
     fs.statSync(LURKLE_CONFIG_PATH, fs.F_OK);
     config = loadYaml(LURKLE_CONFIG_PATH);
 } catch (e) {
-
+    console.log(chalk.red(e.name  + ':'));
+    console.log(chalk.red(e.reason));
 }
 
 program
@@ -69,19 +76,28 @@ var lurkleCommands = lurkles
     // Load lurkle files while ignoring inline definitions
     .map(function(lurkle, key) {
         if(typeof lurkle === 'string') {
-            lurkle = loadYaml(fileExists(path.resolve(lurkle,'lurkle.yml')));
+            var cwd = lurkle;
+            if(lurkleExists(lurkle)) {
+                lurkle = loadYaml(lurkleExists(lurkle));                
+                lurkle.cwd = cwd;            
+            } else {
+                return null;
+            }
         } else {
             lurkle.inline = true;            
         }
 
         return lurkle; 
     })
+    .filter(function(lurkle) {
+        return lurkle;
+    })
     // Check tasks against the main task list 
     // and preset a warning for undocumented tasks
     .map(function(lurkle) {
         Object.keys(lurkle.tasks).forEach(function(task){
             if(Object.keys(config.tasks).indexOf(task) < 0) {
-                warnings.push(chalk.yellow(" * Task '" + task + "' from '" + lurkle.name + "' is not documented in lurkle-config.yml"));
+                addWarning("Task '" + task + "' from '" + lurkle.name + "' is not documented in lurkle-config.yml");
             }
         });
         return lurkle;
@@ -112,10 +128,13 @@ tasks.forEach(function(task) {
         if(lurkle.tasks[task]) {
             var tasksToRun = [].concat(lurkle.tasks[task]);
             tableLog([chalk.green(task), chalk.blue(lurkle.name), tasksToRun.join('\n')]);
+    
 
+            
             tasksToRun.forEach(function(tt) {
+                console.log('Running', chalk.cyan(tt), 'in', chalk.cyan(lurkle.cwd || './'))
                 var childProcess = shellCommand(tt, {
-                    cwd: (lurkle.inline) ? lurkle.cwd || './' : path.resolve(lurkle.name),
+                    cwd: lurkle.cwd || './',
                     stdio: 'inherit'
                 });          
 
