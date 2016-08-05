@@ -14,30 +14,44 @@ Create a `lurkle-config.yml` in the root of your project. This contains a list o
 
 ```yml
 lurkles:
-    - src/services/microservice-a
-    - src/services/microservice-b
-    - node_modules/microservice-c
+  - ./app-a
+  - ./app-b
+  
+  - name: lurkle-1
+    cwd: './app-a'
+    tasks:
+      test: echo "embedded test from $(pwd)"
+
+  - name: lurkle-2
+    cwd: './app-b'
+    tasks:
+      test: echo "embedded test from $(pwd)"
+  
 tasks:
-    - dependencies
-    - test
-    - build
-    - package
+  test: run the test suites
+  build: build the application
+
 ```
 
 Then create a `lurkle.yml` file in each subfolder. Each lurkle can then provide a command for as many tasks as they need.
 
 ```yml
-# src/services/microservice-a/lurkle.yml
-dependencies: npm install
-test: karma start
+# example/app-a/lurkle.yml
+name: app-a
+tasks:
+  test: echo 'test from app-a'
+  build: 
+    - echo 'build from app-a'
+    - echo 'build2 from app-a'
+  thing: echo 'build from app-a'
 
-# src/services/microservice-b/lurkle.yml
-test: bash ./scripts/test.sh
-package: bash ./scripts/package.sh
+# example/app-b/lurkle.yml
+name: app-b
+tasks:
+  test: echo 'test from app-b'
+  build: echo 'build from app-b'
+  other: echo 'build from app-b'
 
-# node_modules/microservice-c
-test: npm run test
-build: npm run build
 ```
 
 ## Run
