@@ -51,6 +51,7 @@ try {
 program
     .version(pkg.version)
     .option('-l, --lurkles <items>', 'A list of config files to merge', function(val) {return val.split(',')})
+    .option('-d, --dry', 'show commands without running them')
 
 //
 // Add tasks from the config file to the help
@@ -127,19 +128,24 @@ tasks.forEach(function(task) {
     lurkleCommands.forEach(function(lurkle){
         if(lurkle.tasks[task]) {
             var tasksToRun = [].concat(lurkle.tasks[task]);
-            tableLog([chalk.green(task), chalk.blue(lurkle.name), tasksToRun.join('\n')]);
-    
+            tableLog([
+                chalk.green(task) + '\n' +  chalk.grey(config.tasks[task]), 
+                chalk.blue(lurkle.name) + '\n' + chalk.grey(lurkle.cwd), 
+                tasksToRun.join('\n')
+            ]);  
 
             
             tasksToRun.forEach(function(tt) {
-                console.log('Running', chalk.cyan(tt), 'in', chalk.cyan(lurkle.cwd || './'))
-                var childProcess = shellCommand(tt, {
-                    cwd: lurkle.cwd || './',
-                    stdio: 'inherit'
-                });          
+                if(!program.dry) {
+                    console.log('Running', chalk.cyan(tt), 'in', chalk.cyan(lurkle.cwd || './'))
+                    var childProcess = shellCommand(tt, {
+                        cwd: lurkle.cwd || './',
+                        stdio: 'inherit'
+                    });          
 
-                if(childProcess.status > 0) {
-                    process.exit(childProcess.status);
+                    if(childProcess.status > 0) {
+                        process.exit(childProcess.status);
+                    }                    
                 }
             });
             console.log('\r');
