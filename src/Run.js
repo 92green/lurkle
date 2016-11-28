@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import {blue, green, grey, cyan} from 'chalk';
 import fs from 'fs';
 import path from 'path';
 import Table from 'cli-table';
@@ -50,10 +50,11 @@ export default function Run(program, config) {
         })
         .filter(lurkle => lurkle)
         // Check tasks against the main task list
-        // and preset a warning for undocumented tasks
+        // and present a warning for undocumented tasks
         .map(lurkle =>  {
+            var {defaultRunner, tasks} = lurkle;
             Object
-                .keys(lurkle.tasks)
+                .keys(tasks || {})
                 .forEach(task => {
                     if(task === 'start') {
                         pushWarning(`Reserved task 'start' found in ${lurkle.name}`);
@@ -61,6 +62,22 @@ export default function Run(program, config) {
                         pushWarning("Task '" + task + "' from '" + lurkle.name + "' is not documented in lurkle-config.yml");
                     }
                 });
+
+            if(defaultRunner) {
+                tasks = Object.assign(
+                    {},
+                    tasks,
+                    tasks
+                        // Filter tasks that are already written
+                        .filter(ii => !(tasks && tasks[ii]))
+                        // Apply the default runner to the remainder
+                        .reduce((rr, ii) => {
+                            rr[ii] = `${defaultRunner} ${ii}`
+                            return rr;
+                        }, {})
+                );
+            }
+
             return lurkle;
         })
         // filter out lurkles if -l flag is defined
@@ -72,9 +89,10 @@ export default function Run(program, config) {
         })
         //create the command table
         .map((lurkle) =>  {
+            console.log(lurkle)
             // Add row to info table
-            var commandTableRow = [chalk.blue(lurkle.name)].concat(tasks.map((ll) => {
-                return lurkle.tasks[ll] ? chalk.green(ll) : chalk.gray(ll)
+            var commandTableRow = [blue(lurkle.name)].concat(tasks.map(ll => {
+                return lurkle.tasks[ll] ? green(ll) : grey(ll)
             }));
             commandTable.push(commandTableRow);
 
@@ -86,18 +104,19 @@ export default function Run(program, config) {
     // Start spawning the tasks in order
     tasks.forEach((task) =>  {
         lurkleCommands.forEach((lurkle) => {
-            if(lurkle.tasks[task]) {
-                var tasksToRun = [].concat(lurkle.tasks[task]);
+            var lurkleTask = lurkle.tasks[task];
+            if(lurkleTask) {
+                var tasksToRun = [].concat(lurkleTask);
                 tableLog([
-                    chalk.green(task) + '\n' +  chalk.grey(config.tasks[task]),
-                    chalk.blue(lurkle.name) + '\n' + chalk.grey(lurkle.cwd),
+                    green(task) + '\n' +  grey(config.tasks[task]),
+                    blue(lurkle.name) + '\n' + grey(lurkle.cwd),
                     tasksToRun.join('\n')
                 ]);
 
 
                 tasksToRun.forEach((tt) =>  {
                     if(!program.dry) {
-                        console.log('Running', chalk.cyan(tt), 'in', chalk.cyan(lurkle.cwd || './'))
+                        console.log('Running', cyan(tt), 'in', cyan(lurkle.cwd || './'))
                         var childProcess = shellCommand(tt, {
                             cwd: lurkle.cwd || './',
                             stdio: 'inherit'

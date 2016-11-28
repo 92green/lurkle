@@ -8,9 +8,9 @@ Lurkle is a CLI that lets you run similar commands in multiple sub-folders. It's
 npm install -g lurkle
 ```
 
-## Configuration
+## Tasks
 
-Create a `lurkle-config.yml` in the root of your project. This contains a list of the locations to where your lurkles reside. As well as a list of possible tasks that each can run. This doubles as both configuration and documentation. 
+Create a `lurkle-config.yml` in the root of your project. This contains a list of the locations to where your lurkles reside as well as a list of possible tasks that each can run. This doubles as both configuration and documentation. 
 
 ```yml
 lurkles:
@@ -54,7 +54,7 @@ tasks:
 
 ```
 
-## Run
+## Run Tasks
 ```sh
 lurkle [tasks] [-l optional list of lurkle locations]
 ```
@@ -65,6 +65,38 @@ lurkle [tasks] [-l optional list of lurkle locations]
 |`lurkle build`                                | run the build command in all lurkles           |
 |`lurkle build test`                           | run the build and test command in all lurkles  |
 |`lurkle build -l src/services/microservice-b` | run the build command in microservice-b lurkle |
+
+## Lurkle Sites
+```sh
+lurkle start [sites]
+```
+
+Lurkle can be used as an interface to start a set of pm2 instances
+
+```yml
+sites:
+  env:
+    CLIENT_HOST: 'localhost'
+    CLIENT_PORT: 3000
+    SERVER_HOST: 'localhost'
+    SERVER_PORT: 3001
+
+  server:
+    env:
+      SERVER_ONLY_ENV: 12345
+    cwd: server
+    script: 'index.js'
+
+  client:
+  server:
+    cwd: client
+    script: 'index.js'
+```
+
+| Command                     | Result                 |
+|-----------------------------|------------------------|
+|`lurkle start`               | Start all sites        |
+|`lurkle start client`        | Start only the client  |
 
 
 
