@@ -2,12 +2,12 @@ import pm2 from 'pm2';
 import chalk from 'chalk';
 import {pushWarning, printWarning} from './util/warning';
 
-export default function Start({args}, {sites}) {
-    if(!sites) {
-        console.log(chalk.red('Error:'), 'No sites found in lurkle-config');
+export default function Start({args}, {services}) {
+    if(!services) {
+        console.log(chalk.red('Error:'), 'No services found in lurkle-config');
         process.exit(1);
     }
-    var ecosystem = Object.keys(sites)
+    var ecosystem = Object.keys(services)
         .filter(ii => ii !== 'env')
         .filter(ii => {
             if(args.length > 1) {
@@ -16,11 +16,11 @@ export default function Start({args}, {sites}) {
             return true;
         })
         .map(ii => {
-            var site = sites[ii];
+            var site = services[ii];
             return {
                 name: ii,
                 ...site,
-                env: Object.assign({}, sites.env, site.env)
+                env: Object.assign({}, services.env, site.env)
             };
         });
 

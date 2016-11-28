@@ -24,8 +24,12 @@ try {
 
 program
     .version(pkg.version)
-    .option('-l, --lurkles <items>', 'A list of config files to merge', function(val) {return val.split(',')})
-    .option('-d, --dry', 'show commands without running them');
+    .option('-l, --lurkles <items>', 'A list of config files to merge', val => val.split(','))
+    .option('-d, --dry', 'show commands without running them')
+
+program
+    .command('start')
+    .description('run the sites from lurkle-config.yml')
 
 //
 // Filter tasks
