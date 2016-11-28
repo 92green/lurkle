@@ -1,0 +1,4 @@
+{
+  "presets": ["blueflag"],
+  "sourceMaps": "inline"
+}
