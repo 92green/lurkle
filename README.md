@@ -88,7 +88,7 @@ Each key on `sites` creates a new service to start. The value object is passed d
 To minimise re-declaring environment variables the root `env` object will be used as defaults for each service.
 
 ```yaml
-sites:
+services:
   env:
     CLIENT_HOST: 'localhost'
     CLIENT_PORT: 3000
