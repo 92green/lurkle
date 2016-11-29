@@ -4,7 +4,7 @@ import path from 'path';
 import Table from 'cli-table';
 import shellCommand from './util/shellCommand';
 import {pushWarning} from './util/warning';
-
+import loadYaml from './util/loadYaml';
 
 function lurkleExists(lurkle) {
     var pathLocation = path.resolve(lurkle, 'lurkle.yml')
