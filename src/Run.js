@@ -25,10 +25,11 @@ function tableLog(arr) {
 
 
 export default function Run(program, config) {
-
     var commandTable = new Table();
-    var tasks = (program.args.length) ? program.args : Object.keys(config.tasks);
+    var tasksToRun = (program.args.length) ? program.args : Object.keys(config.tasks);
     var tasksRun = 0;
+
+    tasksToRun = tasksToRun.filter(ii => ii !== 'start');
 
     // Generate the order of commands
     var lurkleCommands = config.lurkles
@@ -52,7 +53,7 @@ export default function Run(program, config) {
         // Check tasks against the main task list
         // and present a warning for undocumented tasks
         .map(lurkle =>  {
-            var {defaultRunner, tasks} = lurkle;
+            var {defaultRunner, tasks = {}} = lurkle;
             Object
                 .keys(tasks || {})
                 .forEach(task => {
@@ -64,12 +65,14 @@ export default function Run(program, config) {
                 });
 
             if(defaultRunner) {
-                tasks = Object.assign(
+                lurkle.tasks = Object.assign(
                     {},
                     tasks,
-                    tasks
+                    tasksToRun
                         // Filter tasks that are already written
-                        .filter(ii => !(tasks && tasks[ii]))
+                        .filter(ii => {
+                            return !tasks[ii]
+                        })
                         // Apply the default runner to the remainder
                         .reduce((rr, ii) => {
                             rr[ii] = `${defaultRunner} ${ii}`
@@ -89,9 +92,8 @@ export default function Run(program, config) {
         })
         //create the command table
         .map((lurkle) =>  {
-            console.log(lurkle)
             // Add row to info table
-            var commandTableRow = [blue(lurkle.name)].concat(tasks.map(ll => {
+            var commandTableRow = [blue(lurkle.name)].concat(tasksToRun.map(ll => {
                 return lurkle.tasks[ll] ? green(ll) : grey(ll)
             }));
             commandTable.push(commandTableRow);
@@ -102,7 +104,7 @@ export default function Run(program, config) {
     console.log(commandTable.toString());
 
     // Start spawning the tasks in order
-    tasks.forEach((task) =>  {
+    tasksToRun.forEach((task) =>  {
         lurkleCommands.forEach((lurkle) => {
             var lurkleTask = lurkle.tasks[task];
             if(lurkleTask) {
