@@ -13,6 +13,7 @@ import {pushWarning, printWarning} from './util/warning';
 var LURKLE_CONFIG_PATH = path.resolve('lurkle-config.yml');
 var config;
 
+
 try {
     fs.statSync(LURKLE_CONFIG_PATH, fs.F_OK);
     config = loadYaml(LURKLE_CONFIG_PATH);
@@ -26,6 +27,7 @@ program
     .version(pkg.version)
     .option('-l, --lurkles <items>', 'A list of config files to merge', val => val.split(','))
     .option('-d, --dry', 'show commands without running them')
+    .option('-c, --concurrent', 'run commands concurrently')
 
 program
     .command('start')
@@ -68,7 +70,6 @@ switch (program.args[0]) {
     default:
         Run(program, config);
         printWarning();
-        process.exit();
         break;
 }
 

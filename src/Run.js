@@ -23,7 +23,6 @@ function tableLog(arr) {
     console.log(table.toString());
 }
 
-
 export default function Run(program, config) {
     var commandTable = new Table();
     var tasksToRun = (program.args.length) ? program.args : Object.keys(config.tasks);
@@ -118,11 +117,11 @@ export default function Run(program, config) {
 
                 tasksToRun.forEach((tt) =>  {
                     if(!program.dry) {
-                        console.log('Running', cyan(tt), 'in', cyan(lurkle.cwd || './'))
+                        console.log('Running', cyan(tt), 'in', cyan(lurkle.cwd || './'), program.concurrent ? 'concurrently' : '')
                         var childProcess = shellCommand(tt, {
                             cwd: lurkle.cwd || './',
                             stdio: 'inherit'
-                        });
+                        }, program.concurrent);
 
                         if(childProcess.status > 0) {
                             process.exit(childProcess.status);

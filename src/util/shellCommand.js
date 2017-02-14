@@ -1,6 +1,7 @@
-var spawnSync = require('child_process').spawnSync;
+var {spawn, spawnSync} = require('child_process');
 
-module.exports = function shellCommand(command, options) {
-    var childProcess = spawnSync('sh', ['-c', command], options);   
+module.exports = function shellCommand(command, options, concurrent) {
+    const commmand = concurrent ? spawn : spawnSync;
+    var childProcess = commmand('sh', ['-c', command], options);
     return childProcess;
-} 
+}
