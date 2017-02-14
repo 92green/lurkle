@@ -9,7 +9,8 @@
     "prepublish": "npm run build"
   },
   "files": [
-    "src"
+    "src",
+    "lib"
   ],
   "keywords": [],
   "author": "",
